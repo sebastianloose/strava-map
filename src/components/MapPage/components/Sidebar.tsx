@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./Sidebar.module.scss";
 import stravaConnect from "../../../assets/strava-branding/connect.svg";
 import stravaFooter from "../../../assets/strava-branding/footer.svg";
@@ -23,7 +22,11 @@ const Sidebar = () => {
         </button>
       </div>
       <div className={styles.footerRow}>
-        <a href="https://github.com/sebastianloose" target="_blank">
+        <a
+          href="https://github.com/sebastianloose"
+          target="_blank"
+          className="link"
+        >
           GitHub
         </a>
         <p className={styles.spacer}>•</p>
