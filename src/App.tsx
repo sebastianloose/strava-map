@@ -1,10 +1,11 @@
 import MapPage from "./components/MapPage/MapPage";
+import AppState from "./service/appState";
 
 const app = () => {
   return (
-    <div>
+    <AppState>
       <MapPage />
-    </div>
+    </AppState>
   );
 };
 
