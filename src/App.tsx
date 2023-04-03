@@ -1,7 +1,11 @@
-import "./App.css";
+import MapPage from "./components/MapPage/MapPage";
 
-function App() {
-  return <div className="App">Strava Map</div>;
-}
+const app = () => {
+  return (
+    <div>
+      <MapPage />
+    </div>
+  );
+};
 
-export default App;
+export default app;
