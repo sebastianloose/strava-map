@@ -1,0 +1,30 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: "Create env file"
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Build
+        run: npm run build
+
+      - name: Copy to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          key: ${{ secrets.SSH_KEY }}
+          source: dist/
+          target: /var/www/map.sebastianloose.de/
