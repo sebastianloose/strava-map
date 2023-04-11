@@ -18,6 +18,13 @@ const Sidebar = ({ map }: Props) => {
   const user = useContext(UserContext);
 
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [focusedActivity, setFocusedActivity] = useState<Activity | null>(null);
+
+  useEffect(() => {
+    if (focusedActivity) {
+      focusActivity(focusedActivity);
+    }
+  }, [focusedActivity]);
 
   if (user == null) {
     return (
@@ -98,7 +105,7 @@ const Sidebar = ({ map }: Props) => {
         },
       });
       map?.on("click", a.id.toString(), () => {
-        console.log(`Click on route: ${a.name}`);
+        setFocusedActivity(a);
       });
     });
 
@@ -165,7 +172,12 @@ const Sidebar = ({ map }: Props) => {
           <div onClick={fetchActivities}>Load</div>
         ) : (
           activities.map((a) => (
-            <ActivityRow activity={a} onClick={() => focusActivity(a)} />
+            <ActivityRow
+              key={a.id}
+              activity={a}
+              focused={a.id == focusedActivity?.id}
+              onClick={() => setFocusedActivity(a)}
+            />
           ))
         )}
       </div>

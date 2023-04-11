@@ -28,12 +28,12 @@ const StatsItem = ({ icon, label }: StatsItemProps) => {
 
 interface ActivityRowProps {
   activity: Activity;
+  focused: boolean;
   onClick: () => void;
 }
 
 const ActivityRow = ({ activity, onClick }: ActivityRowProps) => {
   const getActivityIcon = (activityType: string) => {
-    console.log(activityType);
     let icon;
     switch (activityType) {
       case "Ride":
