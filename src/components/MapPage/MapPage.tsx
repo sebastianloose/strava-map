@@ -49,9 +49,7 @@ const MapPage = () => {
       <div className={styles.controlRow}>
         <div
           className={styles.controlBox}
-          onClick={() =>
-            map?.setStyle("mapbox://styles/mapbox/satellite-streets-v12")
-          }
+          onClick={() => map?.setStyle("mapbox://styles/mapbox/dark-v11")}
         >
           M
         </div>

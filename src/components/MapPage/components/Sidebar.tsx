@@ -8,10 +8,11 @@ import activityApi from "../../../api/activity";
 import Activity from "../../../types/Activity";
 import polyline from "@mapbox/polyline";
 import mapboxgl from "mapbox-gl";
+import ActivityRow from "./ActivityRow";
 
-type Props = {
+interface Props {
   map: mapboxgl.Map | null | undefined;
-};
+}
 
 const Sidebar = ({ map }: Props) => {
   const user = useContext(UserContext);
@@ -71,9 +72,6 @@ const Sidebar = ({ map }: Props) => {
 
     mappedActivities.forEach((a) => {
       map?.on("load", () => console.log("loading"));
-      console.log("adding " + a.name);
-
-      console.log(a.map.points);
       map?.addSource(a.id.toString(), {
         type: "geojson",
         data: {
@@ -99,7 +97,6 @@ const Sidebar = ({ map }: Props) => {
           "line-width": 4,
         },
       });
-      console.log(map?.getLayer(a.id.toString()));
       map?.on("click", a.id.toString(), () => {
         console.log(`Click on route: ${a.name}`);
       });
@@ -112,6 +109,45 @@ const Sidebar = ({ map }: Props) => {
     }
 
     setActivities(mappedActivities);
+  };
+
+  const colorActivity = (
+    id: string,
+    color: string,
+    opacity: number,
+    width: number
+  ) => {
+    map?.setPaintProperty(id, "line-color", color);
+    map?.setPaintProperty(id, "line-opacity", opacity);
+    map?.setPaintProperty(id, "line-width", width);
+  };
+
+  const focusActivity = (activity: Activity) => {
+    let bounds: mapboxgl.LngLatBounds | null = null;
+
+    activity.map.points.forEach((point) => {
+      if (!bounds) {
+        bounds = new mapboxgl.LngLatBounds(point, point);
+      } else {
+        bounds.extend(point);
+      }
+    });
+
+    if (bounds) {
+      map?.fitBounds(bounds, {
+        padding: 30,
+      });
+    }
+
+    activities.forEach((a) => {
+      if (a.id == activity.id) return;
+      const id = a.id.toString();
+      colorActivity(id, "#999999", 1, 4);
+    });
+
+    const id = activity.id.toString();
+    colorActivity(id, "#fc4c02", 1, 6);
+    map?.moveLayer(id);
   };
 
   return (
@@ -129,9 +165,7 @@ const Sidebar = ({ map }: Props) => {
           <div onClick={fetchActivities}>Load</div>
         ) : (
           activities.map((a) => (
-            <p>
-              {a.name} - {Math.round(a.distance / 1000)}km
-            </p>
+            <ActivityRow activity={a} onClick={() => focusActivity(a)} />
           ))
         )}
       </div>
