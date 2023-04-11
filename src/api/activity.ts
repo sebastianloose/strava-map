@@ -2,7 +2,7 @@ import axios, { isAxiosError } from "axios";
 import tokenService from "../service/token";
 import Activity from "../types/Activity";
 
-const baseUrl = "http://localhost:8080";
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const getAuthHeader = () => ({
   Authorization: "Bearer " + tokenService.getToken(),
