@@ -30,5 +30,4 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           source: dist/
           strip_components: 1
-          rm: true
           target: /var/www/map.sebastianloose.de/
