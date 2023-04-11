@@ -28,5 +28,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          source: dist/*
+          source: dist/
+          strip_components: 1
+          rm: true
           target: /var/www/map.sebastianloose.de/
