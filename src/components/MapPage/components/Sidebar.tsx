@@ -41,7 +41,10 @@ const Sidebar = ({ map }: Props) => {
           <p className={styles.connectStravaLabel}>
             To get started, log in with Strava
           </p>
-          <a href="http://localhost:8080/oauth-login" className="link">
+          <a
+            href={`${import.meta.env.VITE_API_URL}/oauth-login`}
+            className="link"
+          >
             <img src={stravaConnect} />
           </a>
         </div>
