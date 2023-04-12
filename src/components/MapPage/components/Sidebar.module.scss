@@ -18,6 +18,13 @@
   margin-top: 1.3rem;
 }
 
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .contentContainer {
   height: 100%;
   overflow-y: scroll;

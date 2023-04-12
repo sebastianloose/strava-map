@@ -33,11 +33,11 @@ const Sidebar = ({ map }: Props) => {
           Strava Map<span className="accentFont">.</span>
         </h1>
         <p className={styles.subheader}>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, cum
-          commodi veritatis eveniet id qui saepe dolore eius architecto.
+          Easily track all your Strava activities in one place. See your runs,
+          rides, hikes, and more on a single map - try it now!
         </p>
 
-        <div className={styles.contentContainer}>
+        <div className={styles.loginContainer}>
           <p className={styles.connectStravaLabel}>
             To get started, log in with Strava
           </p>
@@ -165,10 +165,7 @@ const Sidebar = ({ map }: Props) => {
       <h1>
         Strava Map<span className="accentFont">.</span>
       </h1>
-      <p className={styles.subheader}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, cum
-        commodi veritatis eveniet id qui saepe dolore eius architecto.
-      </p>
+      <div></div>
 
       <div className={styles.contentContainer}>
         {activities.length == 0 ? (
