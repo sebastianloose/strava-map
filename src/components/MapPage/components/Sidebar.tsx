@@ -53,7 +53,6 @@ const Sidebar = ({ map }: Props) => {
   }, [focusedActivity]);
 
   useEffect(() => {
-    console.log("sorting");
     setActivities([
       ...sortActivities(activities, sortParameter, sortDirection),
     ]);

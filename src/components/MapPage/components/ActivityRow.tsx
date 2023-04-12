@@ -8,7 +8,11 @@ import {
   faBolt,
   faPerson,
   faPersonBiking,
+  faPersonHiking,
   faPersonRunning,
+  faPersonSkiing,
+  faPersonSnowboarding,
+  faSailboat,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -26,6 +30,19 @@ const StatsItem = ({ icon, label }: StatsItemProps) => {
   );
 };
 
+const getActivityIcon = (activityType: string) => {
+  const icons: { [key: string]: IconDefinition } = {
+    Ride: faPersonBiking,
+    Run: faPersonRunning,
+    Hike: faPersonHiking,
+    Rowing: faSailboat,
+    Snowboard: faPersonSnowboarding,
+    Ski: faPersonSkiing,
+  };
+  const icon = icons[activityType] || faPerson;
+  return <FontAwesomeIcon icon={icon} />;
+};
+
 interface ActivityRowProps {
   activity: Activity;
   focused: boolean;
@@ -33,21 +50,6 @@ interface ActivityRowProps {
 }
 
 const ActivityRow = ({ activity, focused, onClick }: ActivityRowProps) => {
-  const getActivityIcon = (activityType: string) => {
-    let icon;
-    switch (activityType) {
-      case "Ride":
-        icon = faPersonBiking;
-        break;
-      case "Run":
-        icon = faPersonRunning;
-        break;
-      default:
-        icon = faPerson;
-    }
-    return <FontAwesomeIcon icon={icon} />;
-  };
-
   const getFormattedDate = (date: string) => {
     const d = new Date(Date.parse(date));
     const day = `0${d.getDate()}`.slice(-2);
