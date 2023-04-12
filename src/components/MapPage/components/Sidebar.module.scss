@@ -30,6 +30,25 @@
   align-items: center;
 }
 
+.filterContainer {
+  padding: 1rem;
+
+  .sortContainer {
+    display: flex;
+
+    p {
+      margin-right: 0.4rem;
+    }
+
+    .sortIcon {
+      margin-left: 0.4rem;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--accent-color-orange);
+    }
+  }
+}
+
 .contentContainer {
   height: 100%;
   overflow-y: scroll;

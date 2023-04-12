@@ -9,22 +9,55 @@ import Activity from "../../../types/Activity";
 import polyline from "@mapbox/polyline";
 import mapboxgl from "mapbox-gl";
 import ActivityRow from "./ActivityRow";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   map: mapboxgl.Map | null | undefined;
 }
+
+type SortParameter =
+  | "start_date"
+  | "distance"
+  | "total_elevation_gain"
+  | "average_watts";
+
+type SortDirection = "asc" | "desc";
+
+const sortActivities = (
+  activities: Activity[],
+  parameter: SortParameter,
+  direction: SortDirection
+) =>
+  activities.sort((a, b) => {
+    const d = direction == "asc" ? 1 : -1;
+    if (typeof a[parameter] == "number") {
+      return ((a[parameter] as number) - (b[parameter] as number)) * d;
+    }
+    return a[parameter].toString().localeCompare(b[parameter].toString()) * d;
+  });
 
 const Sidebar = ({ map }: Props) => {
   const user = useContext(UserContext);
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [focusedActivity, setFocusedActivity] = useState<Activity | null>(null);
+  const [sortParameter, setSortParameter] =
+    useState<SortParameter>("start_date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   useEffect(() => {
     if (focusedActivity) {
       focusActivity(focusedActivity);
     }
   }, [focusedActivity]);
+
+  useEffect(() => {
+    console.log("sorting");
+    setActivities([
+      ...sortActivities(activities, sortParameter, sortDirection),
+    ]);
+  }, [sortParameter, sortDirection]);
 
   if (user == null) {
     return (
@@ -67,7 +100,7 @@ const Sidebar = ({ map }: Props) => {
     const rawActivities = await activityApi.getActivities();
 
     let bounds: mapboxgl.LngLatBounds | null = null;
-    const mappedActivities = rawActivities.map((a) => {
+    let mappedActivities = rawActivities.map((a) => {
       a.map.points = polyline.decode(a.map.summary_polyline).map(([x, y]) => {
         const reversed = [y, x] as [number, number];
         if (bounds == null) {
@@ -80,8 +113,13 @@ const Sidebar = ({ map }: Props) => {
       return a;
     });
 
+    mappedActivities = sortActivities(
+      mappedActivities,
+      sortParameter,
+      sortDirection
+    );
+
     mappedActivities.forEach((a) => {
-      map?.on("load", () => console.log("loading"));
       map?.addSource(a.id.toString(), {
         type: "geojson",
         data: {
@@ -119,6 +157,7 @@ const Sidebar = ({ map }: Props) => {
     }
 
     setActivities(mappedActivities);
+    setSortParameter(sortParameter);
   };
 
   const colorActivity = (
@@ -165,7 +204,31 @@ const Sidebar = ({ map }: Props) => {
       <h1 className={styles.title}>
         Strava Map<span className="accentFont">.</span>
       </h1>
-      <div></div>
+      <div className={styles.filterContainer}>
+        <div className={styles.sortContainer}>
+          <p>Sort by:</p>
+          <select
+            value={sortParameter}
+            onChange={(e) => setSortParameter(e.target.value as SortParameter)}
+          >
+            <option value="start_date">Date</option>
+            <option value="elapsed_time">Duration</option>
+            <option value="distance">Distance</option>
+            <option value="total_elevation_gain">Elevation</option>
+            <option value="average_watts">Power</option>
+          </select>
+          <div
+            className={styles.sortIcon}
+            onClick={() =>
+              setSortDirection(sortDirection == "asc" ? "desc" : "asc")
+            }
+          >
+            <FontAwesomeIcon
+              icon={sortDirection == "asc" ? faArrowUp : faArrowDown}
+            />
+          </div>
+        </div>
+      </div>
 
       <div className={styles.contentContainer}>
         {activities.length == 0 ? (
