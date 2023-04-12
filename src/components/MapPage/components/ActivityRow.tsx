@@ -15,6 +15,7 @@ import {
   faSailboat,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useRef } from "react";
 
 interface StatsItemProps {
   icon: IconDefinition;
@@ -43,6 +44,14 @@ const getActivityIcon = (activityType: string) => {
   return <FontAwesomeIcon icon={icon} />;
 };
 
+const getFormattedDate = (date: string) => {
+  const d = new Date(Date.parse(date));
+  const day = `0${d.getDate()}`.slice(-2);
+  const month = `0${d.getMonth() + 1}`.slice(-2);
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+};
+
 interface ActivityRowProps {
   activity: Activity;
   focused: boolean;
@@ -50,18 +59,22 @@ interface ActivityRowProps {
 }
 
 const ActivityRow = ({ activity, focused, onClick }: ActivityRowProps) => {
-  const getFormattedDate = (date: string) => {
-    const d = new Date(Date.parse(date));
-    const day = `0${d.getDate()}`.slice(-2);
-    const month = `0${d.getMonth() + 1}`.slice(-2);
-    const year = d.getFullYear();
-    return `${day}.${month}.${year}`;
-  };
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (focused && ref) {
+      ref.current!.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [focused]);
 
   return (
     <div
       className={focused ? styles.containerActive : styles.container}
       onClick={onClick}
+      ref={ref}
     >
       <div className={styles.iconContainer}>
         {getActivityIcon(activity.type)}
