@@ -1,21 +1,37 @@
 .container {
-  width: 100%;
-  margin: 1.2rem 0;
+  width: calc(100% - 2rem);
   display: flex;
   align-items: center;
+  padding: 0.65rem 1rem;
   cursor: pointer;
 }
 
+.containerActive {
+  width: calc(100% - 2rem);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background: #fc4c0220;
+  border-radius: 0.5rem;
+  padding: calc(0.65rem - 1px) calc(1rem - 1px);
+  border: 1px solid #fc4c0260;
+}
+
 .iconContainer {
+  flex: 0 1 3rem;
   background: #fc4c02;
   width: 3rem;
   height: 3rem;
-  border-radius: 0.7rem;
+  border-radius: 100%;
   display: grid;
   place-items: center;
   margin-right: 1rem;
-  font-size: 1.4rem;
-  color: var(--primary-font-color);
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.contentColumn {
+  flex: 1 1 auto;
 }
 
 .title {
@@ -23,15 +39,20 @@
   font-weight: 600;
 }
 
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+}
+
 .statsRow {
   margin-top: 0.2rem;
   display: flex;
+  justify-content: space-between;
 }
 
 .statsItem {
   display: flex;
   align-items: center;
-  margin: 0 0.5rem;
 
   .statsIcon {
     font-size: 1rem;

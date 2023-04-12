@@ -32,7 +32,7 @@ interface ActivityRowProps {
   onClick: () => void;
 }
 
-const ActivityRow = ({ activity, onClick }: ActivityRowProps) => {
+const ActivityRow = ({ activity, focused, onClick }: ActivityRowProps) => {
   const getActivityIcon = (activityType: string) => {
     let icon;
     switch (activityType) {
@@ -48,13 +48,27 @@ const ActivityRow = ({ activity, onClick }: ActivityRowProps) => {
     return <FontAwesomeIcon icon={icon} />;
   };
 
+  const getFormattedDate = (date: string) => {
+    const d = new Date(Date.parse(date));
+    const day = `0${d.getDate()}`.slice(-2);
+    const month = `0${d.getMonth() + 1}`.slice(-2);
+    const year = d.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
   return (
-    <div className={styles.container} onClick={onClick}>
+    <div
+      className={focused ? styles.containerActive : styles.container}
+      onClick={onClick}
+    >
       <div className={styles.iconContainer}>
         {getActivityIcon(activity.type)}
       </div>
-      <div>
-        <p className={styles.title}>{activity.name}</p>
+      <div className={styles.contentColumn}>
+        <div className={styles.titleRow}>
+          <p className={styles.title}>{activity.name}</p>
+          <p>{getFormattedDate(activity.start_date)}</p>
+        </div>
         <div className={styles.statsRow}>
           <StatsItem
             icon={faStopwatch}

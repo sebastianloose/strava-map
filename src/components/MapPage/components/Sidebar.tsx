@@ -162,7 +162,7 @@ const Sidebar = ({ map }: Props) => {
 
   return (
     <div className={styles.container}>
-      <h1>
+      <h1 className={styles.title}>
         Strava Map<span className="accentFont">.</span>
       </h1>
       <div></div>

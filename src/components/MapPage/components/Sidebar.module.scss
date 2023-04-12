@@ -4,7 +4,7 @@
   min-width: 30rem;
   max-width: 50rem;
   height: calc(100vh - 7.5rem);
-  padding: 2.5rem 2.5rem 1rem 2.5rem;
+  padding: 2.5rem 1rem 1rem 1rem;
   z-index: 100;
   position: absolute;
   border-radius: 0.5rem;
@@ -14,7 +14,12 @@
   grid-template-rows: min-content min-content 1fr min-content;
 }
 
+.title {
+  margin-left: 1rem;
+}
+
 .subheader {
+  margin-left: 1rem;
   margin-top: 1.3rem;
 }
 
