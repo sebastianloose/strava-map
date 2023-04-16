@@ -56,13 +56,50 @@ const filterActivities = (
 
 const Sidebar = () => {
   const user = useContext(UserContext);
-
+  const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [focusedActivity, setFocusedActivity] = useState<Activity | null>(null);
   const [sortParameter, setSortParameter] =
     useState<SortParameter>("start_date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [activityFilter, setActivityFilter] = useState<ActivityFilter[]>([]);
+
+  const createActivityFilter = (activities: Activity[]) => {
+    const types = [...new Set(activities.map((a) => a.type))];
+    return types.map(
+      (type) =>
+        ({
+          icon: ActivityService.getActivityTypeIcon(type),
+          type: type,
+          active: true,
+        } as ActivityFilter)
+    );
+  };
+
+  const fetchActivities = async () => {
+    setLoading(true);
+    const rawActivities = await activityApi.getActivities();
+
+    let mappedActivities = rawActivities.map((a) => {
+      a.map.points = polyline
+        .decode(a.map.summary_polyline)
+        .map(([x, y]) => [y, x] as [number, number]);
+      return a;
+    });
+
+    mappedActivities = sortActivities(
+      mappedActivities,
+      sortParameter,
+      sortDirection
+    );
+
+    MapService.renderActivities(mappedActivities, setFocusedActivity);
+    MapService.zoomToActivityBounds(mappedActivities);
+
+    setActivityFilter(createActivityFilter(mappedActivities));
+    setActivities(mappedActivities);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (focusedActivity) {
@@ -87,6 +124,10 @@ const Sidebar = () => {
   useEffect(() => {
     MapService.toggleActivityVisibility(activities);
   }, [activities]);
+
+  useEffect(() => {
+    fetchActivities();
+  }, []);
 
   if (user == null) {
     return (
@@ -125,40 +166,31 @@ const Sidebar = () => {
     );
   }
 
-  const createActivityFilter = (activities: Activity[]) => {
-    const types = [...new Set(activities.map((a) => a.type))];
-    console.log(activities);
-    return types.map(
-      (type) =>
-        ({
-          icon: ActivityService.getActivityTypeIcon(type),
-          type: type,
-          active: true,
-        } as ActivityFilter)
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <h1 className={styles.title}>
+          Strava Map<span className="accentFont">.</span>
+        </h1>
+        <div></div>
+
+        <div className={styles.contentContainer}>
+          <p>Loading</p>
+        </div>
+        <div className={styles.footerRow}>
+          <a
+            href="https://github.com/sebastianloose"
+            target="_blank"
+            className="link"
+          >
+            GitHub
+          </a>
+          <p className={styles.spacer}>•</p>
+          <img src={stravaFooter} className={styles.stravaFooter} />
+        </div>
+      </div>
     );
-  };
-
-  const fetchActivities = async () => {
-    const rawActivities = await activityApi.getActivities();
-
-    let mappedActivities = rawActivities.map((a) => {
-      a.map.points = polyline
-        .decode(a.map.summary_polyline)
-        .map(([x, y]) => [y, x] as [number, number]);
-      return a;
-    });
-
-    mappedActivities = sortActivities(
-      mappedActivities,
-      sortParameter,
-      sortDirection
-    );
-
-    MapService.renderActivities(mappedActivities, setFocusedActivity);
-
-    setActivityFilter(createActivityFilter(mappedActivities));
-    setActivities(mappedActivities);
-  };
+  }
 
   return (
     <div className={styles.container}>
@@ -195,7 +227,7 @@ const Sidebar = () => {
 
       <div className={styles.contentContainer}>
         {activities.length == 0 ? (
-          <div onClick={fetchActivities}>Load</div>
+          <p>Loading</p>
         ) : (
           getActiveActivities(activities).map((a) => (
             <ActivityRow

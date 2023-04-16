@@ -1,19 +1,19 @@
 .container {
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
   display: flex;
   align-items: center;
-  padding: 0.65rem 1rem;
+  padding: 0.65rem 0.5rem;
   cursor: pointer;
 }
 
 .containerActive {
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
   display: flex;
   align-items: center;
   cursor: pointer;
   background: #fc4c0220;
   border-radius: 0.5rem;
-  padding: calc(0.65rem - 1px) calc(1rem - 1px);
+  padding: calc(0.65rem - 1px) calc(0.5rem - 1px);
   border: 1px solid #fc4c0260;
 }
 

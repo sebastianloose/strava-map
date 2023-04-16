@@ -15,11 +15,11 @@
 }
 
 .title {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 .subheader {
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   margin-top: 1.3rem;
 }
 
@@ -31,7 +31,9 @@
 }
 
 .filterContainer {
-  padding: 1rem;
+  padding: 0rem 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
 
   .sortContainer {
     display: flex;

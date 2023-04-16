@@ -36,7 +36,7 @@ const FilterSetting = ({ filter, setFilter }: FilterSettingProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
-        <p className={styles.title}>Filter</p>
+        <p className={styles.title}></p>
       </div>
       <div className={styles.contentRow}>
         {filter.map((item) => (

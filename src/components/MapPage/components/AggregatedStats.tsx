@@ -40,7 +40,7 @@ const AggregatedStats = ({ activities }: AggregatedStatsProps) => {
 
   return (
     <div className={styles.container}>
-      <p className={styles.title}>Total</p>
+      <p className={styles.title}></p>
       <div className={styles.row}>
         <StatsItem icon={faStopwatch} label={`${getTime()}`} />
         <StatsItem icon={faArrowsLeftRight} label={`${distance} km`} />
