@@ -99,6 +99,13 @@ const Sidebar = () => {
     setActivityFilter(createActivityFilter(mappedActivities));
     setActivities(mappedActivities);
     setLoading(false);
+
+    MapService.setMapStyleLoadListener(() => {
+      MapService.renderActivities(mappedActivities, setFocusedActivity);
+      setActivityFilter(createActivityFilter(mappedActivities));
+      MapService.zoomToActivityBounds(mappedActivities);
+      setActivities(mappedActivities);
+    });
   };
 
   useEffect(() => {
@@ -174,7 +181,7 @@ const Sidebar = () => {
         </h1>
         <div></div>
 
-        <div className={styles.contentContainer}>
+        <div className={styles.loadingContainer}>
           <p>Loading</p>
         </div>
         <div className={styles.footerRow}>

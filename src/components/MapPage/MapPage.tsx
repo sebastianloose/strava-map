@@ -23,8 +23,7 @@ const MapPage = () => {
         <div
           className={styles.controlBox}
           onClick={() =>
-            //  map?.setStyle("mapbox://styles/mapbox/dark-v11")
-            console.log("toggle")
+            MapService.setMapStyle("mapbox://styles/mapbox/dark-v11")
           }
         >
           M

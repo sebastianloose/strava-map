@@ -1,6 +1,5 @@
 import mapboxgl from "mapbox-gl";
 import Activity from "../../../types/Activity";
-import activity from "./activity";
 
 let map: mapboxgl.Map | null;
 
@@ -135,6 +134,14 @@ const focusActivity = (focusedActivity: Activity, activities: Activity[]) => {
   map?.moveLayer(id);
 };
 
+const setMapStyle = (style: string) => {
+  map?.setStyle(style);
+};
+
+const setMapStyleLoadListener = (callback: () => void) => {
+  map?.on("style.load", callback);
+};
+
 export default {
   initializeMap,
   renderActivities,
@@ -142,4 +149,6 @@ export default {
   focusActivity,
   colorActivityHeatmap,
   toggleActivityVisibility,
+  setMapStyle,
+  setMapStyleLoadListener,
 };

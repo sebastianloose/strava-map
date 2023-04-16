@@ -4,7 +4,7 @@
   min-width: 30rem;
   max-width: 50rem;
   height: calc(100vh - 7.5rem);
-  padding: 2.5rem 1rem 1rem 1rem;
+  padding: 2rem 1rem 0.5rem 1rem;
   z-index: 100;
   position: absolute;
   border-radius: 0.5rem;
@@ -28,6 +28,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.loadingContainer {
+  display: grid;
+  place-items: center;
 }
 
 .filterContainer {

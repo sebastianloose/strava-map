@@ -35,13 +35,15 @@
 }
 
 .title {
-  color: var(--primary-font-color);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .titleRow {
   display: flex;
   justify-content: space-between;
+  p {
+    color: var(--primary-font-color);
+  }
 }
 
 .statsRow {
