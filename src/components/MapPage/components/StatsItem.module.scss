@@ -1,0 +1,10 @@
+.statsItem {
+  display: flex;
+  align-items: center;
+
+  .statsIcon {
+    font-size: 1rem;
+    margin-right: 0.2rem;
+    color: var(--primary-font-color);
+  }
+}

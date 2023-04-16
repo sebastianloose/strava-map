@@ -1,0 +1,17 @@
+.container {
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--secondary-font-color);
+
+  .title {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-font-color);
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+}

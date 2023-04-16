@@ -11,6 +11,7 @@ import mapboxgl from "mapbox-gl";
 import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import AggregatedStats from "./AggregatedStats";
 
 interface Props {
   map: mapboxgl.Map | null | undefined;
@@ -227,6 +228,7 @@ const Sidebar = ({ map }: Props) => {
             />
           </div>
         </div>
+        <AggregatedStats activities={activities} />
       </div>
 
       <div className={styles.contentContainer}>
