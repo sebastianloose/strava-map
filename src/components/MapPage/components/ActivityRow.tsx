@@ -4,31 +4,17 @@ import styles from "./ActivityRow.module.scss";
 import Activity from "../../../types/Activity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  IconDefinition,
   faArrowTrendUp,
   faArrowsLeftRight,
   faBolt,
-  faPerson,
-  faPersonBiking,
-  faPersonHiking,
-  faPersonRunning,
-  faPersonSkiing,
-  faPersonSnowboarding,
-  faSailboat,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
+import ActivityService from "../../../service/activity";
 
 const getActivityIcon = (activityType: string) => {
-  const icons: { [key: string]: IconDefinition } = {
-    Ride: faPersonBiking,
-    Run: faPersonRunning,
-    Hike: faPersonHiking,
-    Rowing: faSailboat,
-    Snowboard: faPersonSnowboarding,
-    Ski: faPersonSkiing,
-  };
-  const icon = icons[activityType] || faPerson;
-  return <FontAwesomeIcon icon={icon} />;
+  return (
+    <FontAwesomeIcon icon={ActivityService.getActivityTypeIcon(activityType)} />
+  );
 };
 
 const getFormattedDate = (date: string) => {

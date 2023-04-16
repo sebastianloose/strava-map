@@ -12,6 +12,9 @@ import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import AggregatedStats from "./AggregatedStats";
+import FilterSetting from "./FilterSetting";
+import ActivityFilter from "../../../types/ActivityFilter";
+import ActivityService from "../../../service/activity";
 
 interface Props {
   map: mapboxgl.Map | null | undefined;
@@ -46,6 +49,7 @@ const Sidebar = ({ map }: Props) => {
   const [sortParameter, setSortParameter] =
     useState<SortParameter>("start_date");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [activityFilter, setActivityFilter] = useState<ActivityFilter[]>([]);
 
   useEffect(() => {
     if (focusedActivity) {
@@ -95,6 +99,19 @@ const Sidebar = ({ map }: Props) => {
       </div>
     );
   }
+
+  const createActivityFilter = (activities: Activity[]) => {
+    const types = [...new Set(activities.map((a) => a.type))];
+    console.log(activities);
+    return types.map(
+      (type) =>
+        ({
+          icon: ActivityService.getActivityTypeIcon(type),
+          type: type,
+          active: true,
+        } as ActivityFilter)
+    );
+  };
 
   const fetchActivities = async () => {
     const rawActivities = await activityApi.getActivities();
@@ -158,6 +175,7 @@ const Sidebar = ({ map }: Props) => {
 
     setActivities(mappedActivities);
     setSortParameter(sortParameter);
+    setActivityFilter(createActivityFilter(mappedActivities));
   };
 
   const colorActivity = (
@@ -228,6 +246,7 @@ const Sidebar = ({ map }: Props) => {
             />
           </div>
         </div>
+        <FilterSetting filter={activityFilter} setFilter={setActivityFilter} />
         <AggregatedStats activities={activities} />
       </div>
 

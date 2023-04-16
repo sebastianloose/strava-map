@@ -1,0 +1,30 @@
+.container {
+  .contentRow {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  background: var(--accent-color-orange);
+  border-radius: 1rem;
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+
+  .icon {
+    color: #fff;
+    margin-right: 0.5rem;
+  }
+
+  p {
+    color: #fff;
+  }
+}
+
+.activityItemPassiv {
+  background: var(--secondary-font-color);
+}
