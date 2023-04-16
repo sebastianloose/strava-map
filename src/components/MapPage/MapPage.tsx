@@ -8,8 +8,15 @@ import MapService from "./service/map";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
+const mapStyles = [
+  "mapbox://styles/mapbox/outdoors-v12",
+  "mapbox://styles/mapbox/dark-v11",
+  "mapbox://styles/mapbox/satellite-streets-v12",
+];
+
 const MapPage = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
+  let mapStyleIndex = 0;
 
   useEffect(() => {
     if (mapContainer == null) return;
@@ -22,9 +29,10 @@ const MapPage = () => {
       <div className={styles.controlRow}>
         <div
           className={styles.controlBox}
-          onClick={() =>
-            MapService.setMapStyle("mapbox://styles/mapbox/dark-v11")
-          }
+          onClick={() => {
+            mapStyleIndex = (mapStyleIndex + 1) % mapStyles.length;
+            MapService.setMapStyle(mapStyles[mapStyleIndex]);
+          }}
         >
           M
         </div>
