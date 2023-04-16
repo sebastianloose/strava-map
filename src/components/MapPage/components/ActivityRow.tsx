@@ -9,7 +9,7 @@ import {
   faBolt,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
-import ActivityService from "../../../service/activity";
+import ActivityService from "../service/activity";
 
 const getActivityIcon = (activityType: string) => {
   return (

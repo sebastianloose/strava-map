@@ -7,18 +7,14 @@ import stravaFooter from "../../../assets/strava-branding/footer.svg";
 import activityApi from "../../../api/activity";
 import Activity from "../../../types/Activity";
 import polyline from "@mapbox/polyline";
-import mapboxgl from "mapbox-gl";
 import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import AggregatedStats from "./AggregatedStats";
 import FilterSetting from "./FilterSetting";
 import ActivityFilter from "../../../types/ActivityFilter";
-import ActivityService from "../../../service/activity";
-
-interface Props {
-  map: mapboxgl.Map | null | undefined;
-}
+import ActivityService from "../service/activity";
+import MapService from "../service/map";
 
 type SortParameter =
   | "start_date"
@@ -41,7 +37,24 @@ const sortActivities = (
     return a[parameter].toString().localeCompare(b[parameter].toString()) * d;
   });
 
-const Sidebar = ({ map }: Props) => {
+const getActiveActivities = (activities: Activity[]) => {
+  return activities.filter((a) => a.active);
+};
+
+const filterActivities = (
+  activities: Activity[],
+  activityFilter: ActivityFilter[]
+) => {
+  const activeActivityTypes = activityFilter
+    .filter((a) => a.active)
+    .map((a) => a.type);
+  activities.forEach((a) => {
+    a.active = activeActivityTypes.includes(a.type);
+  });
+  return [...activities];
+};
+
+const Sidebar = () => {
   const user = useContext(UserContext);
 
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -53,7 +66,11 @@ const Sidebar = ({ map }: Props) => {
 
   useEffect(() => {
     if (focusedActivity) {
-      focusActivity(focusedActivity);
+      MapService.zoomToActivityBounds([focusedActivity]);
+      MapService.focusActivity(focusedActivity, activities);
+    } else {
+      MapService.zoomToActivityBounds(getActiveActivities(activities));
+      MapService.colorActivityHeatmap(activities);
     }
   }, [focusedActivity]);
 
@@ -62,6 +79,14 @@ const Sidebar = ({ map }: Props) => {
       ...sortActivities(activities, sortParameter, sortDirection),
     ]);
   }, [sortParameter, sortDirection]);
+
+  useEffect(() => {
+    setActivities(filterActivities(activities, activityFilter));
+  }, [activityFilter]);
+
+  useEffect(() => {
+    MapService.toggleActivityVisibility(activities);
+  }, [activities]);
 
   if (user == null) {
     return (
@@ -116,17 +141,10 @@ const Sidebar = ({ map }: Props) => {
   const fetchActivities = async () => {
     const rawActivities = await activityApi.getActivities();
 
-    let bounds: mapboxgl.LngLatBounds | null = null;
     let mappedActivities = rawActivities.map((a) => {
-      a.map.points = polyline.decode(a.map.summary_polyline).map(([x, y]) => {
-        const reversed = [y, x] as [number, number];
-        if (bounds == null) {
-          bounds = new mapboxgl.LngLatBounds(reversed, reversed);
-        } else {
-          bounds.extend(reversed);
-        }
-        return reversed;
-      });
+      a.map.points = polyline
+        .decode(a.map.summary_polyline)
+        .map(([x, y]) => [y, x] as [number, number]);
       return a;
     });
 
@@ -136,85 +154,10 @@ const Sidebar = ({ map }: Props) => {
       sortDirection
     );
 
-    mappedActivities.forEach((a) => {
-      map?.addSource(a.id.toString(), {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: a.map.points,
-          },
-        },
-      });
-      map?.addLayer({
-        id: a.id.toString(),
-        type: "line",
-        source: a.id.toString(),
-        layout: {
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        paint: {
-          "line-color": "#E15554",
-          "line-opacity": 0.35,
-          "line-width": 4,
-        },
-      });
-      map?.on("click", a.id.toString(), () => {
-        setFocusedActivity(a);
-      });
-    });
+    MapService.renderActivities(mappedActivities, setFocusedActivity);
 
-    if (bounds) {
-      map?.fitBounds(bounds, {
-        padding: 30,
-      });
-    }
-
-    setActivities(mappedActivities);
-    setSortParameter(sortParameter);
     setActivityFilter(createActivityFilter(mappedActivities));
-  };
-
-  const colorActivity = (
-    id: string,
-    color: string,
-    opacity: number,
-    width: number
-  ) => {
-    map?.setPaintProperty(id, "line-color", color);
-    map?.setPaintProperty(id, "line-opacity", opacity);
-    map?.setPaintProperty(id, "line-width", width);
-  };
-
-  const focusActivity = (activity: Activity) => {
-    let bounds: mapboxgl.LngLatBounds | null = null;
-
-    activity.map.points.forEach((point) => {
-      if (!bounds) {
-        bounds = new mapboxgl.LngLatBounds(point, point);
-      } else {
-        bounds.extend(point);
-      }
-    });
-
-    if (bounds) {
-      map?.fitBounds(bounds, {
-        padding: 30,
-      });
-    }
-
-    activities.forEach((a) => {
-      if (a.id == activity.id) return;
-      const id = a.id.toString();
-      colorActivity(id, "#999999", 1, 4);
-    });
-
-    const id = activity.id.toString();
-    colorActivity(id, "#fc4c02", 1, 6);
-    map?.moveLayer(id);
+    setActivities(mappedActivities);
   };
 
   return (
@@ -247,19 +190,21 @@ const Sidebar = ({ map }: Props) => {
           </div>
         </div>
         <FilterSetting filter={activityFilter} setFilter={setActivityFilter} />
-        <AggregatedStats activities={activities} />
+        <AggregatedStats activities={getActiveActivities(activities)} />
       </div>
 
       <div className={styles.contentContainer}>
         {activities.length == 0 ? (
           <div onClick={fetchActivities}>Load</div>
         ) : (
-          activities.map((a) => (
+          getActiveActivities(activities).map((a) => (
             <ActivityRow
               key={a.id}
               activity={a}
               focused={a.id == focusedActivity?.id}
-              onClick={() => setFocusedActivity(a)}
+              onClick={() => {
+                setFocusedActivity(focusedActivity == a ? null : a);
+              }}
             />
           ))
         )}

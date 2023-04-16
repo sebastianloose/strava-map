@@ -1,5 +1,6 @@
 export default interface Activity {
   id: number;
+  active: boolean;
   external_id: string;
   upload_id: number;
   name: string;
