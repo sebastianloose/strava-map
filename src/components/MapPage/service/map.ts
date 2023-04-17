@@ -66,7 +66,7 @@ const renderActivities = (
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#E15554",
+        "line-color": "#fc4c02",
         "line-opacity": 0.35,
         "line-width": 4,
       },
@@ -120,7 +120,7 @@ const colorActivity = (
 };
 
 const colorActivityHeatmap = (activities: Activity[]) => {
-  activities.forEach((a) => colorActivity(a, "#E15554", 0.35, 4));
+  activities.forEach((a) => colorActivity(a, "#fc4c02", 0.35, 4));
 };
 
 const focusActivity = (focusedActivity: Activity, activities: Activity[]) => {

@@ -133,8 +133,10 @@ const Sidebar = () => {
   }, [activities]);
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (user != null) {
+      fetchActivities();
+    }
+  }, [user]);
 
   if (user == null) {
     return (
