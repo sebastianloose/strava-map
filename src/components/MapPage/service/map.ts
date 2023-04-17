@@ -142,6 +142,10 @@ const setMapStyleLoadListener = (callback: () => void) => {
   map?.on("style.load", callback);
 };
 
+const setCameraPitch = (pitch: number) => {
+  map?.setPitch(pitch);
+};
+
 export default {
   initializeMap,
   renderActivities,
@@ -151,4 +155,5 @@ export default {
   toggleActivityVisibility,
   setMapStyle,
   setMapStyleLoadListener,
+  setCameraPitch,
 };

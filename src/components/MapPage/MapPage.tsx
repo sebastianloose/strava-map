@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
 import styles from "./MapPage.module.scss";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Sidebar from "./components/Sidebar";
 import MapService from "./service/map";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMap, faMountain } from "@fortawesome/free-solid-svg-icons";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -14,9 +16,12 @@ const mapStyles = [
   "mapbox://styles/mapbox/satellite-streets-v12",
 ];
 
+const cameraPitches = [0, 45, 60];
+
 const MapPage = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   let mapStyleIndex = 0;
+  let cameraPitchIndex = 0;
 
   useEffect(() => {
     if (mapContainer == null) return;
@@ -34,7 +39,16 @@ const MapPage = () => {
             MapService.setMapStyle(mapStyles[mapStyleIndex]);
           }}
         >
-          M
+          <FontAwesomeIcon icon={faMap} className={styles.icon} />
+        </div>
+        <div
+          className={styles.controlBox}
+          onClick={() => {
+            cameraPitchIndex = (cameraPitchIndex + 1) % cameraPitches.length;
+            MapService.setCameraPitch(cameraPitches[cameraPitchIndex]);
+          }}
+        >
+          <FontAwesomeIcon icon={faMountain} className={styles.icon} />
         </div>
       </div>
     </div>

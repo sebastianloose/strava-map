@@ -20,4 +20,9 @@
   place-items: center;
   border-radius: 0.5rem;
   cursor: pointer;
+  margin-bottom: 0.5rem;
+
+  .icon {
+    color: var(--primary-font-color);
+  }
 }
