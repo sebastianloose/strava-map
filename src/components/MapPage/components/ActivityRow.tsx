@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import StatsItem from "./StatsItem";
 import styles from "./ActivityRow.module.scss";
-import Activity from "../../../types/Activity";
+import Activity from "../../../types/ActivitySummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowTrendUp,

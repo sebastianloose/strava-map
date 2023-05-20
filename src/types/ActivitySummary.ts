@@ -1,4 +1,6 @@
-export default interface Activity {
+import ActivityDetailed from "./ActivityDetailed";
+
+export default interface ActivitySummary {
   id: number;
   active: boolean;
   external_id: string;
@@ -45,4 +47,5 @@ export default interface Activity {
   max_heartrate: number;
   truncated: number;
   has_kudoed: boolean;
+  details: ActivityDetailed | null;
 }

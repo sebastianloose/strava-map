@@ -1,11 +1,10 @@
-import React from "react";
 import StatsItem from "./StatsItem";
 import {
   faArrowTrendUp,
   faArrowsLeftRight,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
-import Activity from "../../../types/Activity";
+import Activity from "../../../types/ActivitySummary";
 import styles from "./AggregatedStats.module.scss";
 
 interface AggregatedStatsProps {

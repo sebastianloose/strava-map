@@ -5,7 +5,7 @@ import stravaConnect from "../../../assets/strava-branding/connect.svg";
 import stravaFooter from "../../../assets/strava-branding/footer.svg";
 
 import activityApi from "../../../api/activity";
-import Activity from "../../../types/Activity";
+import Activity from "../../../types/ActivitySummary";
 import polyline from "@mapbox/polyline";
 import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -112,6 +112,16 @@ const Sidebar = () => {
     if (focusedActivity) {
       MapService.zoomToActivityBounds([focusedActivity]);
       MapService.focusActivity(focusedActivity, activities);
+      if (focusedActivity.details == null) {
+        (async () => {
+          const details = await activityApi.getActivity(focusedActivity.id);
+          if (details) {
+            details.points = details.points.map(([x, y]) => [y, x]);
+            MapService.updateActivityPoints(focusedActivity, details?.points);
+            focusedActivity.details = details;
+          }
+        })();
+      }
     } else {
       MapService.zoomToActivityBounds(getActiveActivities(activities));
       MapService.colorActivityHeatmap(activities);

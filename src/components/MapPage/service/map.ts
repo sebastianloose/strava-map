@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import Activity from "../../../types/Activity";
+import Activity from "../../../types/ActivitySummary";
 
 let map: mapboxgl.Map | null;
 
@@ -134,6 +134,24 @@ const focusActivity = (focusedActivity: Activity, activities: Activity[]) => {
   map?.moveLayer(id);
 };
 
+const updateActivityPoints = (
+  activity: Activity,
+  points: [number, number][]
+) => {
+  const id = getActivityId(activity);
+  const source = map?.getSource(id);
+  if (source?.type == "geojson") {
+    source.setData({
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: points,
+      },
+    });
+  }
+};
+
 const setMapStyle = (style: string) => {
   map?.setStyle(style);
 };
@@ -156,4 +174,5 @@ export default {
   setMapStyle,
   setMapStyleLoadListener,
   setCameraPitch,
+  updateActivityPoints,
 };
