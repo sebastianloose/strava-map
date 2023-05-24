@@ -5,7 +5,7 @@ import stravaConnect from "../../../assets/strava-branding/connect.svg";
 import stravaFooter from "../../../assets/strava-branding/footer.svg";
 
 import activityApi from "../../../api/activity";
-import Activity from "../../../types/ActivitySummary";
+import Activity from "../../../types/Activity";
 import polyline from "@mapbox/polyline";
 import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,10 +17,10 @@ import ActivityService from "../service/activity";
 import MapService from "../service/map";
 
 type SortParameter =
-  | "start_date"
+  | "startDate"
   | "distance"
-  | "total_elevation_gain"
-  | "average_watts";
+  | "totalElevationGain"
+  | "averageWatts";
 
 type SortDirection = "asc" | "desc";
 
@@ -38,7 +38,7 @@ const sortActivities = (
   });
 
 const getActiveActivities = (activities: Activity[]) => {
-  return activities.filter((a) => a.active);
+  return activities.filter((a) => a.visible);
 };
 
 const filterActivities = (
@@ -49,7 +49,7 @@ const filterActivities = (
     .filter((a) => a.active)
     .map((a) => a.type);
   activities.forEach((a) => {
-    a.active = activeActivityTypes.includes(a.type);
+    a.visible = activeActivityTypes.includes(a.type);
   });
   return [...activities];
 };
@@ -60,7 +60,7 @@ const Sidebar = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [focusedActivity, setFocusedActivity] = useState<Activity | null>(null);
   const [sortParameter, setSortParameter] =
-    useState<SortParameter>("start_date");
+    useState<SortParameter>("startDate");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [activityFilter, setActivityFilter] = useState<ActivityFilter[]>([]);
 
@@ -78,33 +78,22 @@ const Sidebar = () => {
 
   const fetchActivities = async () => {
     setLoading(true);
-    const rawActivities = await activityApi.getActivities();
+    let activities = await activityApi.getActivities();
 
-    let mappedActivities = rawActivities.map((a) => {
-      a.map.points = polyline
-        .decode(a.map.summary_polyline)
-        .map(([x, y]) => [y, x] as [number, number]);
-      return a;
-    });
+    activities = sortActivities(activities, sortParameter, sortDirection);
 
-    mappedActivities = sortActivities(
-      mappedActivities,
-      sortParameter,
-      sortDirection
-    );
+    MapService.renderActivities(activities, setFocusedActivity);
+    MapService.zoomToActivityBounds(activities);
 
-    MapService.renderActivities(mappedActivities, setFocusedActivity);
-    MapService.zoomToActivityBounds(mappedActivities);
-
-    setActivityFilter(createActivityFilter(mappedActivities));
-    setActivities(mappedActivities);
+    setActivityFilter(createActivityFilter(activities));
+    setActivities(activities);
     setLoading(false);
 
     MapService.setMapStyleLoadListener(() => {
-      MapService.renderActivities(mappedActivities, setFocusedActivity);
-      setActivityFilter(createActivityFilter(mappedActivities));
-      MapService.zoomToActivityBounds(mappedActivities);
-      setActivities(mappedActivities);
+      MapService.renderActivities(activities, setFocusedActivity);
+      setActivityFilter(createActivityFilter(activities));
+      MapService.zoomToActivityBounds(activities);
+      setActivities(activities);
     });
   };
 
@@ -112,13 +101,13 @@ const Sidebar = () => {
     if (focusedActivity) {
       MapService.zoomToActivityBounds([focusedActivity]);
       MapService.focusActivity(focusedActivity, activities);
-      if (focusedActivity.details == null) {
+      if (!focusedActivity.isDetailedRoute) {
         (async () => {
           const details = await activityApi.getActivity(focusedActivity.id);
           if (details) {
-            details.points = details.points.map(([x, y]) => [y, x]);
-            MapService.updateActivityPoints(focusedActivity, details?.points);
-            focusedActivity.details = details;
+            focusedActivity.route = details.route;
+            focusedActivity.isDetailedRoute = true;
+            MapService.updateActivityPoints(focusedActivity, details.route);
           }
         })();
       }

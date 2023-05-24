@@ -4,7 +4,7 @@ import {
   faArrowsLeftRight,
   faStopwatch,
 } from "@fortawesome/free-solid-svg-icons";
-import Activity from "../../../types/ActivitySummary";
+import Activity from "../../../types/Activity";
 import styles from "./AggregatedStats.module.scss";
 
 interface AggregatedStatsProps {
@@ -17,13 +17,13 @@ const AggregatedStats = ({ activities }: AggregatedStatsProps) => {
   );
 
   const elevation = activities.reduce(
-    (sum, { total_elevation_gain }) => sum + total_elevation_gain,
+    (sum, { totalElevationGain }) => sum + totalElevationGain,
     0
   );
 
   const getTime = () => {
     const seconds = activities.reduce(
-      (sum, { elapsed_time }) => sum + elapsed_time,
+      (sum, { elapsedTime }) => sum + elapsedTime,
       0
     );
 

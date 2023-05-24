@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import StatsItem from "./StatsItem";
 import styles from "./ActivityRow.module.scss";
-import Activity from "../../../types/ActivitySummary";
+import Activity from "../../../types/Activity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowTrendUp,
@@ -55,12 +55,12 @@ const ActivityRow = ({ activity, focused, onClick }: ActivityRowProps) => {
       <div className={styles.contentColumn}>
         <div className={styles.titleRow}>
           <p className={styles.title}>{activity.name}</p>
-          <p>{getFormattedDate(activity.start_date)}</p>
+          <p>{getFormattedDate(activity.startDate)}</p>
         </div>
         <div className={styles.statsRow}>
           <StatsItem
             icon={faStopwatch}
-            label={new Date(activity.elapsed_time * 1000)
+            label={new Date(activity.elapsedTime * 1000)
               .toISOString()
               .substring(11, 16)}
           />
@@ -70,9 +70,9 @@ const ActivityRow = ({ activity, focused, onClick }: ActivityRowProps) => {
           />
           <StatsItem
             icon={faArrowTrendUp}
-            label={`${activity.total_elevation_gain} m`}
+            label={`${activity.totalElevationGain} m`}
           />
-          <StatsItem icon={faBolt} label={`${activity.average_watts} W`} />
+          <StatsItem icon={faBolt} label={`${activity.averageWatts} W`} />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import Activity from "../../../types/ActivitySummary";
+import Activity from "../../../types/Activity";
 
 let map: mapboxgl.Map | null;
 
@@ -53,7 +53,7 @@ const renderActivities = (
         properties: {},
         geometry: {
           type: "LineString",
-          coordinates: a.map.points,
+          coordinates: a.route,
         },
       },
     });
@@ -82,7 +82,7 @@ const toggleActivityVisibility = (activities: Activity[]) => {
     map?.setLayoutProperty(
       getActivityId(a),
       "visibility",
-      a.active ? "visible" : "none"
+      a.visible ? "visible" : "none"
     );
   });
 };
@@ -91,7 +91,7 @@ const zoomToActivityBounds = (activities: Activity[]) => {
   let bounds: mapboxgl.LngLatBounds | null = null;
 
   activities.forEach((activity) =>
-    activity.map.points.forEach((point) => {
+    activity.route.forEach((point) => {
       if (!bounds) {
         bounds = new mapboxgl.LngLatBounds(point, point);
       } else {
