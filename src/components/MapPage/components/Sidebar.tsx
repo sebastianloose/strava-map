@@ -6,7 +6,6 @@ import stravaFooter from "../../../assets/strava-branding/footer.svg";
 
 import activityApi from "../../../api/activity";
 import Activity from "../../../types/Activity";
-import polyline from "@mapbox/polyline";
 import ActivityRow from "./ActivityRow";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -161,7 +160,7 @@ const Sidebar = () => {
         </div>
         <div className={styles.footerRow}>
           <a
-            href="https://github.com/sebastianloose"
+            href="https://github.com/sebastianloose/strava-map"
             target="_blank"
             className="link"
           >
@@ -187,7 +186,7 @@ const Sidebar = () => {
         </div>
         <div className={styles.footerRow}>
           <a
-            href="https://github.com/sebastianloose"
+            href="https://github.com/sebastianloose/strava-map"
             target="_blank"
             className="link"
           >
@@ -251,7 +250,7 @@ const Sidebar = () => {
       </div>
       <div className={styles.footerRow}>
         <a
-          href="https://github.com/sebastianloose"
+          href="https://github.com/sebastianloose/strava-map"
           target="_blank"
           className="link"
         >
